@@ -1,0 +1,79 @@
+Assignment No. 4
+
+Writing Software for IoT
+
+
+Document Overview:
+This document outlines the details of device coding and customer user guide for proposed raspberry pi application which would semi-automated stock management for the company Wood Stocks.
+Raspberry Pi would be connected to a portable screen which could be used to display the current stock, update stock and also to store the stock to a remote computer over wireless network using file transfer protocol.
+
+Python Code:
+
+#!/usr/bin/env python3
+
+import ftplib
+Inventory = {'A0001':5, 'A0002':2, 'A0003':0, 'A0004':3} # Sample Inventory directory
+
+
+def filetransfer():   # This function is to perform transfer of updated inventory to a remote machine using FTP Protocol
+
+    FinalStock = "DailyStock.txt"
+    ftp = ftplib.FTP('192.168.1.3') # Remote machine IP Address connected over wireless Network or same LAN 
+    ftp.login("username", "password") # Remote machine Login details
+    ftp.cwd('/c/user/Akash/desktop/IoT') #Directory Location of Remote machine where the Updated Stock details are stored 
+    StockUpdate = open('/home/pi/Desktop/SkillageIT/Inventory') #To open the user updated inventory located at Raspberry Pi 
+    ftp.storlines('STOR ' + FinalStock, StockUpdate) # To start FTP transfer the remote machine
+    print("STOCK UPDATE COMPLETED ON REMOTE PC")
+
+def Options(): # This function is to prompt user to provide input options from list of possible record update actions
+    print("Press 1 For updating inventory") 
+    print("Press 2 For checking inventory")
+    print("Press 3 IF Update Completed and proceeding with FTP updated file to remote machine")
+    return input("Select the option:")
+
+Selected = Options()
+
+while True:
+    if Selected == '1':
+        updateinv = input('Enter the Item name to b added : ')
+        Qty = input('New Count after stock check : ')
+        Inventory[updateinv] = Qty
+        print("STOCK UPDATED ON RASPBERRY PI")
+        Selected = Options()
+        
+    elif Selected == '2':
+        for key, value in Inventory.items():
+            print("{}:{}".format(key, value))
+        Selected = Options()
+        
+    elif Selected == '3':
+        print("STOCK IS NOW BEING FTP'd TO REMOTE MACHINE")
+        filetransfer()
+        break
+     
+    
+  
+
+Options()
+
+Brief Overview of code
+This code is comprises of two main function:
+1)	Function Options() 
+This part of code presents to the user list of options available to update the stock
+
+2)	Function Filetransfer() 
+This part of code uses the imported python inbuilt library ftplib and sets up a FTP session between raspberry pi and remote machine for transfer of updated stock.
+
+
+  
+Git Hub Reference
+https://github.com/AkashDGupta/SkillageIT.git
+
+
+
+
+
+
+
+
+
